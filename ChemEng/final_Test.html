@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<!-- saved from url=(0112)final.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Leenald Aungunu Portfolio</title>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="../assets/css/notebook.css">
+		<link rel="stylesheet" href="../assets/css/colorful.css">
+		<link rel="stylesheet" href="../assets/css/main.css">
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+
+		<style type="text/css">
+			/* Overrides of notebook CSS for static HTML export */
+			body {
+			  overflow: visible;
+			  padding: 8px;
+			}
+			div#notebook {
+			  overflow: visible;
+			  border-top: none;
+			}
+			@media print {
+			  div.cell {
+				display: block;
+				page-break-inside: avoid;
+			  } 
+			  div.output_wrapper { 
+				display: block;
+				page-break-inside: avoid; 
+			  }
+			  div.output { 
+				display: block;
+				page-break-inside: avoid; 
+			  }
+			}
+			.showhide_button {
+			  
+			  font-size: 14pt;
+			}
+			.folded_code {
+			  display: none;
+			}
+			</style>
+		
+			<script type="text/javascript">
+			function showhide(id) {
+			  $('#'+id).toggleClass('folded_code');
+			}
+			</script>
+	</head>
+
+	
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Intro -->
+					<div id="header">
+						<p style="font-family: Times New Roman">:)</p>
+						<!-- <ul class="actions">
+							<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
+						</ul> -->
+					</div>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="../index.html">Home</a></li>
+							<li><a href="../ChemEng.html">Chemical Engineering Projects</a></li>
+							<li><a href="../DataAnalysis.html">Data Analysis projects</a></li>
+						</ul>
+						<ul class="icons">
+							<!--<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>-->
+							<!--<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>-->
+							<li><a href="https://linkedin.com/in/laungunu" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/leenaldA" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					
+  <div tabindex="-1" id="main" class="border-box-sizing">
+    <div>
+
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="McCabe-Thiele-method-for-distillation-column-design">McCabe-Thiele method for distillation column design</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <a href="https://www.brewiki.org/distillation-column/distillation-column-design.html">McCabe-Thiele</a> approach provides a simple graphical method for determining the number of theoretical stages required to achieve the desired separation of a binary mixture. It assumes that the column will be operating at constant pressure and with constant molal overflow (CMO), which implies:</p>
+<ul>
+<li><p>Molal heats of vaporisation of the components are roughly the same.</p>
+</li>
+<li><p>Heat effects (heats of solution, heat losses to and from column, etc.) are negligible.</p>
+</li>
+<li><p>For every mole of vapour condensed, one mole of liquid is vaporised.</p>
+</li>
+</ul>
+<p>In some cases, the assumption of constant mass overflow may be valid (instead of CMO). This will be possible if the first condition holds true on a mass basis rather than a molar bases.</p>
+<p><a href="https://chempedia.info/info/distillation_constant_molar_overflow/">The assumption of constant molar overflow is not limiting</a> since in very few systems do the molar heats of vaporisation differ by more than 10 per cent. The method does have limitations, however, and should not be employed when the relative volatility is less than 1.3 or greater than 5, when the reflux ratio is less than 1.1 times the minimum, or when more than twenty-five theoretical trays are required. In these circumstances, the Ponchon-Savarit method described in could be used.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Required-Libraries">Required Libraries</h2><hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_1&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_1">
+<div class=" highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Symbol</span><span class="p">,</span> <span class="n">Eq</span><span class="p">,</span> <span class="n">solve</span> <span class="c1">#to determine intercept with vle plot for stages</span>
+<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="kn">import</span> <span class="n">interactive</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span><span class="n">FloatSlider</span><span class="p">,</span> <span class="n">Box</span><span class="p">,</span> <span class="n">Layout</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">isclose</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_2&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_2">
+<div class=" highlight hl-python"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">'figure.figsize'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Design-Procedure">Design Procedure</h2><hr>
+<p align="justify">Given the VLE (Vapor Liquid Equilibrium) data of a binary mixture. The operating lines of the rectification (top) and stripping (bottom) sections can be drawn. These lines define the mass balances between the vapor and liquid phases in each section of the column. The use of the constant molar overflow assumption ensures that the operating lines are straight lines (i.e. constant slope). Once the operating lines for the top and bottom of the column have been constructed, the theoretical stages and feed line for the column can be constructed. Stages are determined by drawing steps between the operating lines and the  systems VLE curve. These steps are drawn from the specified distillate composition to the bottom composition or vice versa.</p><p align="justify">In the above method the stages of the column are determined after the operating lines of the bottom and top section are drawn, this can also be done by specifying the feed-line of the of system in conjuntion with one operating line.</p><p>Only one pair of lines (exculding the VLE curve) is required to determine the number of theoretical stages, as follows:</p>
+<ul>
+<li><p>feed-line and rectification section operating line</p>
+</li>
+<li><p>feed-line and stripping section operating line</p>
+</li>
+<li><p>stripping and rectification operating lines</p>
+</li>
+</ul>
+<p>This is because each pair of lines can be used to construct the third.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Example">Example</h2><hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Using a <a href="http://www.vaxasoftware.com/doc_eduen/qui/vle_en.pdf">Benzene-Toluene</a> system as an example:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<table>
+<thead><tr>
+<th style="text-align:center">Benzene-Toluene</th>
+<th style="text-align:center">@ 101.325kPa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Benzene mol fraction</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Liquid</td>
+<td style="text-align:center">Vapor</td>
+</tr>
+<tr>
+<td style="text-align:center">0.00</td>
+<td style="text-align:center">0.00</td>
+</tr>
+<tr>
+<td style="text-align:center">0.02</td>
+<td style="text-align:center">0.05</td>
+</tr>
+<tr>
+<td style="text-align:center">0.06</td>
+<td style="text-align:center">0.13</td>
+</tr>
+<tr>
+<td style="text-align:center">0.10</td>
+<td style="text-align:center">0.21</td>
+</tr>
+<tr>
+<td style="text-align:center">0.14</td>
+<td style="text-align:center">0.28</td>
+</tr>
+<tr>
+<td style="text-align:center">0.18</td>
+<td style="text-align:center">0.34</td>
+</tr>
+<tr>
+<td style="text-align:center">0.22</td>
+<td style="text-align:center">0.40</td>
+</tr>
+<tr>
+<td style="text-align:center">0.26</td>
+<td style="text-align:center">0.46</td>
+</tr>
+<tr>
+<td style="text-align:center">0.30</td>
+<td style="text-align:center">0.51</td>
+</tr>
+<tr>
+<td style="text-align:center">0.34</td>
+<td style="text-align:center">0.56</td>
+</tr>
+<tr>
+<td style="text-align:center">0.42</td>
+<td style="text-align:center">0.64</td>
+</tr>
+<tr>
+<td style="text-align:center">0.46</td>
+<td style="text-align:center">0.68</td>
+</tr>
+<tr>
+<td style="text-align:center">0.50</td>
+<td style="text-align:center">0.71</td>
+</tr>
+<tr>
+<td style="text-align:center">0.54</td>
+<td style="text-align:center">0.75</td>
+</tr>
+<tr>
+<td style="text-align:center">0.58</td>
+<td style="text-align:center">0.78</td>
+</tr>
+<tr>
+<td style="text-align:center">0.62</td>
+<td style="text-align:center">0.81</td>
+</tr>
+<tr>
+<td style="text-align:center">0.66</td>
+<td style="text-align:center">0.83</td>
+</tr>
+<tr>
+<td style="text-align:center">0.70</td>
+<td style="text-align:center">0.85</td>
+</tr>
+<tr>
+<td style="text-align:center">0.74</td>
+<td style="text-align:center">0.88</td>
+</tr>
+<tr>
+<td style="text-align:center">0.78</td>
+<td style="text-align:center">0.90</td>
+</tr>
+<tr>
+<td style="text-align:center">0.82</td>
+<td style="text-align:center">0.92</td>
+</tr>
+<tr>
+<td style="text-align:center">0.86</td>
+<td style="text-align:center">0.94</td>
+</tr>
+<tr>
+<td style="text-align:center">0.94</td>
+<td style="text-align:center">0.98</td>
+</tr>
+<tr>
+<td style="text-align:center">1.00</td>
+<td style="text-align:center">1.00</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The molecules of benzene and toluene are similar in molecular weight (78.1 g/mol for benzene and 92.1 g/mol for toluene) and structure, with only dispersion forces acting between molecules in the mixture. Furthermore, both components have similar molar heat of vaporisation values (<a href="https://www.engineeringtoolbox.com/benzene-benzol-properties-d_2053.html">33.8kJ/mol</a> for benzene and <a href="https://www.engineeringtoolbox.com/toluene-methylbenzene-properties-d_2095.html">38.0 kJ/mol</a> for toluene). Therefore, the assumption of constant molal overflow holds for this system.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Plotting-function">Plotting function</h2><hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_3&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_3">
+<div class=" highlight hl-python"><pre><span></span><span class="c1">#Function to plot graph throughout</span>
+<span class="k">def</span> <span class="nf">plot_mt</span><span class="p">(</span><span class="n">vle_x</span><span class="p">,</span><span class="n">vle_y</span><span class="p">,</span><span class="n">title</span> <span class="o">=</span> <span class="s1">''</span><span class="p">,</span><span class="n">caption</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">x_D</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="n">R</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">x_B</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">L_V</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">x_F</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="n">plot_stages</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span><span class="n">summary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+  <span class="sd">"""Plots MacCabe-Thiele graph</span>
+<span class="sd">  </span>
+<span class="sd">  </span>
+<span class="sd">  vle_x: liquid phase VLE data (int|float)</span>
+<span class="sd">  vle_y: vapor phase VLE data (int|float)</span>
+<span class="sd">  title: Plot title  (str)</span>
+<span class="sd">  caption: Plot caption  (str)</span>
+<span class="sd">  x_D: distillate composition (int|float)</span>
+<span class="sd">  R: reflux ratio (int|float)</span>
+<span class="sd">  x_B: bottom composition (int|float)</span>
+<span class="sd">  L_V: Liquid/Vapor in the stripping section (int|float)</span>
+<span class="sd">  x_F: feed composition (int|float)</span>
+<span class="sd">  plot_stages: plot theoretical stages if true (bool)</span>
+<span class="sd">  summary: print summary if true (bool)</span>
+<span class="sd">  </span>
+<span class="sd">  </span>
+<span class="sd">  </span>
+<span class="sd">  """</span>
+
+
+  <span class="c1">#setting axis-margin and annotation x/y offset</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">margins</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="n">ANOT_Y</span> <span class="o">=</span> <span class="mf">0.003</span>
+  <span class="n">ANOT_X</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+  <span class="c1">#plotting vle data</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vle_x</span><span class="p">,</span><span class="n">vle_y</span><span class="p">,</span><span class="n">label</span> <span class="o">=</span> <span class="s1">'VLE'</span><span class="p">)</span>
+
+  <span class="c1">#plotting x = y</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)],[</span><span class="n">y</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span><span class="n">color</span> <span class="o">=</span> <span class="s1">'black'</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">'x=y'</span><span class="p">)</span>
+
+  <span class="c1">#-------------------------------------------------------------------------------------------</span>
+  <span class="c1">#Plotting operating lines</span>
+
+  <span class="c1">#rectification section  constants</span>
+  <span class="n">md</span> <span class="o">=</span> <span class="n">R</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">cd</span> <span class="o">=</span> <span class="n">x_D</span> <span class="o">-</span> <span class="n">md</span><span class="o">*</span><span class="n">x_D</span> <span class="c1"># c = y - mx</span>
+
+  <span class="c1">#stripping section constants</span>
+  <span class="n">mb</span> <span class="o">=</span> <span class="n">L_V</span>
+  <span class="n">cb</span> <span class="o">=</span> <span class="n">x_B</span> <span class="o">-</span> <span class="n">mb</span><span class="o">*</span><span class="n">x_B</span> <span class="c1"># c = y - mx</span>
+
+  <span class="c1">#intersection point between operating lines</span>
+  <span class="c1"># x = c2 - c1/ (m1 - m2)</span>
+  <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">cb</span><span class="p">,</span><span class="n">cd</span><span class="p">,</span><span class="n">md</span><span class="p">,</span><span class="n">mb</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">intersection</span> <span class="o">=</span> <span class="p">(</span><span class="n">cb</span> <span class="o">-</span> <span class="n">cd</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">md</span> <span class="o">-</span> <span class="n">mb</span><span class="p">)</span>
+    <span class="c1">#limiting operating lines to intersection if both operating lines are present</span>
+    <span class="n">rec_x1</span> <span class="o">=</span> <span class="n">intersection</span>
+    <span class="n">rec_y1</span> <span class="o">=</span> <span class="n">md</span><span class="o">*</span><span class="n">intersection</span> <span class="o">+</span> <span class="n">cd</span>
+
+    <span class="n">strip_x2</span> <span class="o">=</span> <span class="n">intersection</span>
+    <span class="n">strip_y2</span> <span class="o">=</span> <span class="n">mb</span><span class="o">*</span><span class="n">intersection</span> <span class="o">+</span> <span class="n">cb</span>
+  <span class="k">else</span><span class="p">:</span>
+
+    <span class="n">rec_x1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">rec_y1</span> <span class="o">=</span> <span class="n">cd</span>
+
+    <span class="n">strip_x2</span> <span class="o">=</span> <span class="n">x_D</span>
+    <span class="n">strip_y2</span> <span class="o">=</span> <span class="n">mb</span><span class="o">*</span><span class="n">x_D</span> <span class="o">+</span> <span class="n">cb</span>
+
+  <span class="k">if</span> <span class="n">x_D</span> <span class="ow">and</span> <span class="n">R</span><span class="p">:</span>
+    <span class="c1">#plotting x_D (desired top composition)</span>
+    <span class="n">top_color</span> <span class="o">=</span> <span class="s1">'green'</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x_D</span><span class="p">,</span><span class="n">x_D</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">x_D</span><span class="p">],</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">'$x_D$'</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">top_color</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">'$x_D$'</span><span class="p">,(</span><span class="n">x_D</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">xytext</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_D</span> <span class="o">+</span> <span class="n">ANOT_X</span><span class="p">,</span><span class="n">ANOT_Y</span><span class="p">),</span><span class="n">annotation_clip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1">#Plotting Rectification section operating line</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">rec_x1</span><span class="p">,</span><span class="n">x_D</span><span class="p">],[</span><span class="n">rec_y1</span><span class="p">,</span><span class="n">x_D</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">'operating line(rectification section)'</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">top_color</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">x_B</span> <span class="ow">and</span> <span class="n">L_V</span><span class="p">:</span>
+    <span class="c1">#plotting x_B (desired bottom composition)</span>
+    <span class="n">bot_color</span> <span class="o">=</span> <span class="s1">'purple'</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x_B</span><span class="p">,</span><span class="n">x_B</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">x_B</span><span class="p">],</span><span class="s1">'--'</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">'$x_B$'</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="n">bot_color</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">'$x_B$'</span><span class="p">,(</span><span class="n">x_B</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">xytext</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_B</span> <span class="o">+</span> <span class="n">ANOT_X</span><span class="p">,</span><span class="n">ANOT_Y</span><span class="p">),</span><span class="n">annotation_clip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1">#Plotting Stripping section operating line</span>
+    <span class="c1"># y = mx + c where m is the slope</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x_B</span><span class="p">,</span><span class="n">strip_x2</span><span class="p">],[</span><span class="n">x_B</span><span class="p">,</span><span class="n">strip_y2</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">'operating line(stripping section)'</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="n">bot_color</span><span class="p">)</span>
+
+  <span class="c1">#-------------------------------------------------------------------------------------------</span>
+  <span class="c1">##Plotting feed line</span>
+
+  <span class="k">if</span> <span class="n">x_F</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x_F</span><span class="p">,</span><span class="n">x_F</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">x_F</span><span class="p">],</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'grey'</span><span class="p">,</span><span class="n">label</span> <span class="o">=</span> <span class="s1">'$x_F$'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s1">'$x_F$'</span><span class="p">,(</span><span class="n">x_F</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">xytext</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_F</span> <span class="o">+</span> <span class="n">ANOT_X</span><span class="p">,</span><span class="n">ANOT_Y</span><span class="p">),</span><span class="n">annotation_clip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">cb</span><span class="p">,</span><span class="n">cd</span><span class="p">,</span><span class="n">md</span><span class="p">,</span><span class="n">mb</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">y_r</span> <span class="o">=</span> <span class="s1">'md*x + cd'</span>
+      <span class="n">var_r</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'md'</span><span class="p">:</span><span class="n">md</span><span class="p">,</span><span class="s1">'cd'</span><span class="p">:</span><span class="n">cd</span><span class="p">}</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x_F</span><span class="p">,</span><span class="n">intersection</span><span class="p">],[</span><span class="n">x_F</span><span class="p">,</span><span class="nb">eval</span><span class="p">(</span><span class="n">y_r</span><span class="p">,</span><span class="n">var_r</span><span class="p">,{</span><span class="s1">'x'</span><span class="p">:</span><span class="n">intersection</span><span class="p">})],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'grey'</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">'q-line'</span><span class="p">)</span>
+
+  <span class="c1">#------------------------------------------------------------------------------------------</span>
+  <span class="c1">##Plotting stages</span>
+  
+  <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">cb</span><span class="p">,</span><span class="n">cd</span><span class="p">,</span><span class="n">md</span><span class="p">,</span><span class="n">mb</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">plot_stages</span><span class="p">:</span>
+
+    <span class="c1">#Determining equation for VLE data by fitting a cubic polynomial</span>
+    <span class="n">coefficients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">vle_x</span><span class="p">,</span><span class="n">vle_y</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">y_vle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">coefficients</span><span class="p">)</span> <span class="c1">#equation</span>
+
+
+    <span class="c1">#Rectification section operating line equation</span>
+    <span class="n">y_r</span> <span class="o">=</span> <span class="s1">'md*x + cd'</span>
+    <span class="n">var_r</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'md'</span><span class="p">:</span><span class="n">md</span><span class="p">,</span><span class="s1">'cd'</span><span class="p">:</span><span class="n">cd</span><span class="p">}</span>
+
+    <span class="c1">#Stripping section operating line equation</span>
+    <span class="n">y_s</span> <span class="o">=</span> <span class="s1">'mb*x + cb'</span>
+    <span class="n">var_s</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'mb'</span><span class="p">:</span><span class="n">mb</span><span class="p">,</span><span class="s1">'cb'</span><span class="p">:</span><span class="n">cb</span><span class="p">}</span>
+
+
+    <span class="c1">#finding pinch point</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span><span class="n">real</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">positive</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">y_int</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">y_r</span><span class="p">,</span><span class="n">var_r</span><span class="p">,{</span><span class="s1">'x'</span><span class="p">:</span><span class="n">intersection</span><span class="p">})</span> <span class="c1">#y at intersection</span>
+    <span class="n">vle_at_int</span> <span class="o">=</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="n">intersection</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">intersection</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">intersection</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">#vle curve val at current intersection</span>
+
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">y_vle</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">y_int</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span> <span class="c1">#point at which intersection is on vle curve</span>
+    
+    <span class="c1">#checking if intersection at or above vle curve</span>
+    <span class="k">if</span> <span class="n">isclose</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intersection</span><span class="p">,</span> <span class="n">abs_tol</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="ow">or</span> <span class="n">y_int</span> <span class="o">&gt;</span> <span class="n">vle_at_int</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s1">'Approximately infinite stages(pinch point)'</span><span class="p">)</span>
+      <span class="n">summary</span> <span class="o">=</span> <span class="kc">False</span>
+      <span class="k">return</span>
+
+
+    <span class="c1">#initializing variables for while loop</span>
+    <span class="n">feed_stage</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">x_step</span> <span class="o">=</span> <span class="n">x_D</span>    <span class="c1">#Begining plot at x_D</span>
+    <span class="n">step_lines</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1">#storing line segments</span>
+    <span class="n">y_vert</span> <span class="o">=</span> <span class="n">x_D</span>    <span class="c1">#initialsing y_vert to be used in sol</span>
+
+    <span class="k">while</span> <span class="n">x_step</span> <span class="o">&gt;</span> <span class="n">x_B</span><span class="p">:</span>
+
+      <span class="c1">####  horizontal lines  ####</span>
+
+      <span class="c1">#Determinig intercept of horizontal line with VLE plot</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span><span class="n">real</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">positive</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+      <span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">Eq</span><span class="p">(</span><span class="n">y_vle</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">y_vle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">y_vert</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Multiple solutions found for intercept with VLE plot'</span><span class="p">)</span>
+        <span class="k">break</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Multiple solutions found for intercept with VLE plot'</span><span class="p">)</span>
+        <span class="k">break</span>
+
+      <span class="c1">#storing line segment</span>
+      <span class="n">x_hori</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+      <span class="c1">#y-values will be different for rectifying and stripping sections</span>
+      <span class="k">if</span> <span class="n">x_step</span> <span class="o">&lt;=</span> <span class="n">intersection</span><span class="p">:</span>
+        <span class="n">y_hori</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">y_s</span><span class="p">,</span><span class="n">var_s</span><span class="p">,{</span><span class="s1">'x'</span><span class="p">:</span><span class="n">x_step</span><span class="p">})</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">feed_stage</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">y_hori</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">y_r</span><span class="p">,</span><span class="n">var_r</span><span class="p">,{</span><span class="s1">'x'</span><span class="p">:</span><span class="n">x_step</span><span class="p">})</span>
+
+      <span class="n">step_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                          <span class="p">{</span><span class="s1">'x'</span><span class="p">:[</span><span class="n">x_step</span><span class="p">,</span><span class="n">x_hori</span><span class="p">],</span>
+                          <span class="s1">'y'</span><span class="p">:[</span><span class="n">y_hori</span><span class="p">,</span><span class="n">y_hori</span><span class="p">]</span>
+                          <span class="p">}</span>
+                        <span class="p">)</span>
+      
+      <span class="c1">#next x_step will be at x_hori(i.e. intercept with VLE plot)</span>
+      <span class="n">x_step</span> <span class="o">=</span> <span class="n">x_hori</span>
+
+      <span class="c1">####  Vertical lines  ####</span>
+
+      <span class="c1">#one point of the vert line will be previous x_hori,y_hori (point on VLE plot)</span>
+
+      <span class="c1">#y-value will be different for rectifying and stripping sections</span>
+      <span class="k">if</span> <span class="n">x_step</span> <span class="o">&lt;=</span> <span class="n">intersection</span><span class="p">:</span>
+        <span class="n">y_vert</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">y_s</span><span class="p">,</span><span class="n">var_s</span><span class="p">,{</span><span class="s1">'x'</span><span class="p">:</span><span class="n">x_step</span><span class="p">})</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">y_vert</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">y_r</span><span class="p">,</span><span class="n">var_r</span><span class="p">,{</span><span class="s1">'x'</span><span class="p">:</span><span class="n">x_step</span><span class="p">})</span> 
+
+      <span class="n">step_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                          <span class="p">{</span><span class="s1">'x'</span><span class="p">:[</span><span class="n">x_step</span><span class="p">,</span><span class="n">x_step</span><span class="p">],</span>
+                          <span class="s1">'y'</span><span class="p">:[</span><span class="n">y_hori</span><span class="p">,</span><span class="n">y_vert</span><span class="p">]</span>
+                          <span class="p">}</span>
+                        <span class="p">)</span>
+      
+      <span class="c1">#next x_step will be the same</span>
+
+    <span class="n">stage_counter</span> <span class="o">=</span> <span class="mi">0</span>
+  
+    <span class="c1">#Print line segments</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">step_lines</span><span class="p">)):</span>
+      <span class="k">if</span> <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'y'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'x'</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+        
+        <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'y'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'x'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+      <span class="k">elif</span> <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'y'</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'x'</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+        
+        <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'y'</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'x'</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+      <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stage_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">stage_counter</span><span class="p">,(</span><span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'x'</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'y'</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+                     <span class="n">xytext</span> <span class="o">=</span> <span class="p">(</span><span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'x'</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ANOT_X</span> <span class="o">-</span> <span class="mf">0.008</span><span class="p">,</span> <span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'y'</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ANOT_Y</span> <span class="o">+</span> <span class="mf">0.009</span><span class="p">),</span>
+                     <span class="n">annotation_clip</span><span class="o">=</span><span class="kc">False</span>
+                     <span class="p">)</span>
+      
+        
+
+
+      <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'x'</span><span class="p">],</span><span class="n">step_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'y'</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">'red'</span><span class="p">)</span>
+      
+    <span class="c1"># #exact number of trays</span>
+    <span class="c1"># if x_step &lt; x_B:</span>
+    <span class="c1">#   a = step_lines[-2]['x'][0] - x_B</span>
+    <span class="c1">#   A = abs(step_lines[-2]['x'][0] - step_lines[-2]['x'][1])</span>
+    <span class="c1">#   num_trays = (len(step_lines)//2) - 2 + a/A  #-2 for reboiler and stage after x_B</span>
+
+
+
+    <span class="c1">#print statements</span>
+    <span class="k">if</span> <span class="n">summary</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Approximately </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">step_lines</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="si">}</span><span class="s1"> ideal stages including the partial reboiler.'</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Ideal feed stage = </span><span class="si">{</span><span class="n">feed_stage</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'For the feed to be a saturated liquid, feed needs to have x_F = </span><span class="si">{</span><span class="n">intersection</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
+      <span class="c1"># print(f'Assuming the column operates with a partial-reboiler and total condenser, total number of trays required = {num_trays}')</span>
+      
+  <span class="c1">#-------------------------------------------------------------------------------------------</span>
+
+  <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'LIQUID(mol/mol)'</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'VAPOR(mol/mol)'</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">figtext</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">caption</span> <span class="p">,</span>  <span class="n">wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">'center'</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Constructing-MacCabe-Thiele-plot">Constructing MacCabe-Thiele plot</h2><hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_4&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_4">
+<div class=" highlight hl-python"><pre><span></span><span class="n">vle_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'liquid'</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.02</span><span class="p">,</span><span class="mf">0.06</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.14</span><span class="p">,</span><span class="mf">0.18</span><span class="p">,</span><span class="mf">0.22</span><span class="p">,</span>
+              <span class="mf">0.26</span><span class="p">,</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">0.34</span><span class="p">,</span><span class="mf">0.42</span><span class="p">,</span><span class="mf">0.46</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.54</span><span class="p">,</span><span class="mf">0.58</span><span class="p">,</span>
+              <span class="mf">0.62</span><span class="p">,</span><span class="mf">0.66</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.74</span><span class="p">,</span><span class="mf">0.78</span><span class="p">,</span><span class="mf">0.82</span><span class="p">,</span><span class="mf">0.86</span><span class="p">,</span><span class="mf">0.94</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+            
+    <span class="s1">'vapor'</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.0455</span><span class="p">,</span><span class="mf">0.132</span><span class="p">,</span><span class="mf">0.209</span><span class="p">,</span><span class="mf">0.28</span><span class="p">,</span><span class="mf">0.344</span><span class="p">,</span><span class="mf">0.404</span><span class="p">,</span><span class="mf">0.4585</span><span class="p">,</span>
+             <span class="mf">0.5075</span><span class="p">,</span><span class="mf">0.5555</span><span class="p">,</span><span class="mf">0.64</span><span class="p">,</span><span class="mf">0.679</span><span class="p">,</span><span class="mf">0.714</span><span class="p">,</span><span class="mf">0.747</span><span class="p">,</span><span class="mf">0.7765</span><span class="p">,</span><span class="mf">0.8054</span><span class="p">,</span>
+             <span class="mf">0.8305</span><span class="p">,</span><span class="mf">0.8545</span><span class="p">,</span><span class="mf">0.8785</span><span class="p">,</span><span class="mf">0.9005</span><span class="p">,</span><span class="mf">0.9215</span><span class="p">,</span><span class="mf">0.9405</span><span class="p">,</span><span class="mf">0.9765</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_5&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_5">
+<div class=" highlight hl-python"><pre><span></span><span class="c1">#Plot initial graph</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s1">'Benzene-Toluene (x,y) Plot'</span>
+<span class="n">caption</span> <span class="o">=</span> <span class="s1">'Plot of Bezene mol fraction in mixture at 1atm'</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">vle_data</span><span class="p">[</span><span class="s1">'liquid'</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">vle_data</span><span class="p">[</span><span class="s1">'vapor'</span><span class="p">]</span>
+
+<span class="n">plot_mt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">caption</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="output_14_0.png">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The system displays a positive deviation from Raoult's law (i.e. the attractive forces between molecules of bezene and toluene are weaker than the attractive forces between molecules in the pure components.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Rectification-Section-Operating-Line">Rectification Section Operating Line</h2><hr>
+<p>The operating line for the rectification section is constructed as follows:</p>
+<ul>
+<li><p>A vertical line is drawn from the x-axis to the ideal equilibrium line(x = y) at point $x_D$ (the desired distillate composition).</p>
+</li>
+<li><p>A line with slope $R/(R+1)$ is then drawn from this instersection point(where R is the reflux ratio).</p>
+</li>
+</ul>
+<p><code>R is the ratio of reflux flow (L) to distillate flow (D).</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_6&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_6">
+<div class=" highlight hl-python"><pre><span></span><span class="c1">#Desired top product composition</span>
+<span class="n">x_D</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="c1">#Reflux ratio</span>
+<span class="n">R</span> <span class="o">=</span> <span class="mf">1.5</span>
+
+<span class="n">plot_mt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">caption</span><span class="p">,</span><span class="n">x_D</span><span class="p">,</span><span class="n">R</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="output_17_0.png">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Stripping-Section-Operating-Line">Stripping Section Operating Line</h2><hr>
+<p>The stripping section operating line is constructed in similar manner:</p>
+<ul>
+<li><p>A vertical line is drawn from the x-axis to the equilibrium line(x = y) at point $x_B$ (the desired <strong>bottoms</strong> composition).</p>
+</li>
+<li><p>A line with slope $L_s/V_s$ (mol/mol) is then drawn from this instersection point(where $L_s$ is the liquid rate down the stripping section and $V_s$ is the vapor rate through the stripping section).</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_7&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_7">
+<div class=" highlight hl-python"><pre><span></span><span class="c1">#Desired top product composition</span>
+<span class="n">x_B</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="c1">#L/V</span>
+<span class="n">L_V</span> <span class="o">=</span> <span class="mf">1.415</span>
+
+
+<span class="n">plot_mt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">caption</span><span class="p">,</span><span class="n">x_D</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">x_B</span><span class="p">,</span><span class="n">L_V</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="output_19_0.png">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Determining-theoretical-number-of-stages">Determining theoretical number of stages</h2><hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p align="justify">By plotting "steps" between the operating lines of the rectifying and stripping sections and the equilibrium line, we are solving a mass balance and an equilibrium problem.
+the equilibrium between a condensing vapor and evaporating liquid on each stage is represented by the equilibrium line and the mass balance between the fluids passing through each stage in the rectification/stripping section is represented by the operating lines of each section.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_8&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_8">
+<div class=" highlight hl-python"><pre><span></span><span class="n">plot_mt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">caption</span><span class="p">,</span><span class="n">x_D</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">x_B</span><span class="p">,</span><span class="n">L_V</span><span class="p">,</span><span class="n">plot_stages</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span><span class="n">summary</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Approximately 5 ideal stages including the partial reboiler.
+Ideal feed stage = 2
+For the feed to be a saturated liquid, feed needs to have x_F = 0.39.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="output_22_1.png">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In systems with a partial reboiler and total condenser, the required number of trays (as opposed to stages) is one less than the number of stages since the graphical construction includes the contribution of the reboiler in carrying out the separation.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Feed-Line-(q-line)">The Feed Line (q-line)</h2><hr>
+<p>The feed will not be present as a saturated liquid if the feed composition is such that it does not coincide with the intersection of the operating lines. The condition of the feed can be deduced by the slope of the feed line, which is drawn between the intersection of the operating lines, and where the feed composition lies on the diagonal line.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_9&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_9">
+<div class=" highlight hl-python"><pre><span></span><span class="n">x_F</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">plot_mt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">caption</span><span class="p">,</span><span class="n">x_D</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">x_B</span><span class="p">,</span><span class="n">L_V</span><span class="p">,</span><span class="n">x_F</span><span class="p">,</span><span class="n">plot_stages</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="output_25_0.png">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Depending on the state of the feed, the feed lines will have different slopes(as shown below).</p>
+<table>
+<thead><tr>
+<th style="text-align:center">q</th>
+<th style="text-align:center">feed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">&lt;0</td>
+<td style="text-align:center">superheated vapor</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">saturated vapor</td>
+</tr>
+<tr>
+<td style="text-align:center">0 $\rightarrow$ 1</td>
+<td style="text-align:center">two phase mixture</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">saturated liquid</td>
+</tr>
+<tr>
+<td style="text-align:center">&gt;1</td>
+<td style="text-align:center">subcooled liquid</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Interactive-plot">Interactive plot</h2><hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="prompt input_prompt">
+
+<a href="final.html#" class="showhide_button" onclick="showhide(&#39;code_cell_10&#39;);return false;">±</a>
+</div>
+
+<div class="inner_cell">
+    <div class="input_area " id="code_cell_10">
+<div class=" highlight hl-python"><pre><span></span><span class="c1">#Click "Run Interact" after making changes to update plot</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">interactive</span><span class="p">(</span><span class="n">plot_mt</span><span class="p">,{</span><span class="s1">'manual'</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+         <span class="n">vle_x</span> <span class="o">=</span> <span class="n">fixed</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">vle_y</span> <span class="o">=</span> <span class="n">fixed</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="n">title</span> <span class="o">=</span> <span class="n">fixed</span><span class="p">(</span><span class="n">title</span><span class="p">),</span> <span class="n">caption</span> <span class="o">=</span> <span class="n">fixed</span><span class="p">(</span><span class="n">caption</span><span class="p">),</span>
+         <span class="n">plot_stages</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">),</span> <span class="n">summary</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">),</span>
+         <span class="n">L_V</span> <span class="o">=</span> <span class="n">FloatSlider</span><span class="p">(</span><span class="nb">min</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span><span class="nb">max</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span><span class="n">value</span> <span class="o">=</span> <span class="mf">1.4</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s1">'L/V'</span><span class="p">),</span>
+         <span class="n">R</span> <span class="o">=</span> <span class="n">FloatSlider</span><span class="p">(</span><span class="nb">min</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span><span class="nb">max</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span><span class="n">value</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s1">'Reflux ratio'</span><span class="p">),</span>
+         <span class="n">x_D</span> <span class="o">=</span>  <span class="n">FloatSlider</span><span class="p">(</span><span class="nb">min</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span><span class="nb">max</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span><span class="n">value</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s1">'Distillate'</span><span class="p">),</span>
+          <span class="n">x_B</span> <span class="o">=</span> <span class="n">FloatSlider</span><span class="p">(</span><span class="nb">min</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span><span class="nb">max</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span><span class="n">value</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s1">'Bottom'</span><span class="p">),</span>
+           <span class="n">x_F</span> <span class="o">=</span> <span class="n">FloatSlider</span><span class="p">(</span><span class="nb">min</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span><span class="nb">max</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span><span class="n">value</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span><span class="n">description</span> <span class="o">=</span> <span class="s1">'feed'</span><span class="p">),</span>
+           
+         <span class="p">);</span>
+
+<span class="n">box_layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span><span class="n">display</span><span class="o">=</span><span class="s1">'flex'</span><span class="p">,</span> <span class="n">flex_flow</span><span class="o">=</span><span class="s1">'column'</span><span class="p">,</span> <span class="n">justify_content</span><span class="o">=</span><span class="s1">'space-between'</span><span class="p">,</span> <span class="n">align_items</span><span class="o">=</span><span class="s1">'flex-start'</span><span class="p">)</span>
+<span class="n">button_box</span> <span class="o">=</span> <span class="n">Box</span><span class="p">([</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">7</span><span class="p">]],</span> <span class="n">layout</span> <span class="o">=</span> <span class="n">box_layout</span><span class="p">)</span>
+<span class="n">figure_box</span> <span class="o">=</span> <span class="n">Box</span><span class="p">([</span><span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">main_box</span> <span class="o">=</span> <span class="n">Box</span><span class="p">([</span><span class="n">figure_box</span><span class="p">,</span><span class="n">button_box</span><span class="p">],</span><span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="p">(</span><span class="n">align_items</span> <span class="o">=</span> <span class="s1">'flex-start'</span><span class="p">))</span>
+<span class="n">main_box</span>
+</pre></div>
+
+</div>
+</div>
+
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+
+ 
+ 
+<div id="75399be7-13d0-4f74-ba1c-1f4f577ddff2"></div>
+<div class="output_subarea output_widget_view ">
+<script type="text/javascript">
+var element = $('#75399be7-13d0-4f74-ba1c-1f4f577ddff2');
+</script>
+<script type="application/vnd.jupyter.widget-view+json">
+{"version_major": 2, "version_minor": 0, "model_id": "1d748587a3104ac996d4a75e6a77eecb"}
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+
+ 
+
+<script type="application/vnd.jupyter.widget-state+json">
+{"1d748587a3104ac996d4a75e6a77eecb": {"model_module": "@jupyter-widgets/controls", "model_name": "BoxModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "BoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "BoxView", "box_style": "", "children": ["IPY_MODEL_9c8c11b8cc23434aa1a8710e4be40285", "IPY_MODEL_0615cb1621d34b4eb022f3dff026abe6"], "layout": "IPY_MODEL_7ebd2d19e1be4eb492ba9a69352fa914"}}, "9c8c11b8cc23434aa1a8710e4be40285": {"model_module": "@jupyter-widgets/controls", "model_name": "BoxModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "BoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "BoxView", "box_style": "", "children": ["IPY_MODEL_d72d9d46285b4e729975cdd3a5113a12"], "layout": "IPY_MODEL_d0c675f62e85489aa09e8d0592441ab4"}}, "0615cb1621d34b4eb022f3dff026abe6": {"model_module": "@jupyter-widgets/controls", "model_name": "BoxModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "BoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "BoxView", "box_style": "", "children": ["IPY_MODEL_ab8e11a71e7843129bbef8fdf065ec14", "IPY_MODEL_4c9500e6e7974d3eb31a235f2aaf8da2", "IPY_MODEL_272300096d624503ba6938f8994fcd27", "IPY_MODEL_d4bac07dfe16490ca0747d2d2325e1a9", "IPY_MODEL_f28dbdafced9433ba683abe5d1dffbad", "IPY_MODEL_4ff54d75c7f44e77a2ee8c012dad484a", "IPY_MODEL_98b524c83eef4592b1153768a144f676", "IPY_MODEL_51e43045403d439fa47758e140f38e21"], "layout": "IPY_MODEL_1fbeb28e77b042508a57fa965afe635e"}}, "7ebd2d19e1be4eb492ba9a69352fa914": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": "flex-start", "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "d72d9d46285b4e729975cdd3a5113a12": {"model_module": "@jupyter-widgets/output", "model_name": "OutputModel", "model_module_version": "1.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/output", "_model_module_version": "1.0.0", "_model_name": "OutputModel", "_view_count": null, "_view_module": "@jupyter-widgets/output", "_view_module_version": "1.0.0", "_view_name": "OutputView", "layout": "IPY_MODEL_83c5d7e880b54c2cb2eeb5f5f6ac8b72", "msg_id": "", "outputs": [{"output_type": "display_data", "data": {"text/plain": "<Figure size 720x576 with 1 Axes>", "image/png": "iVBORw0KGgoAAAANSUhEUgAAAmkAAAIVCAYAAACKkWhoAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADh0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uMy4yLjIsIGh0dHA6Ly9tYXRwbG90bGliLm9yZy+WH4yJAAAgAElEQVR4nOzdd1RWx9bA4d+AIKLYe+8KKKAg2BF7Lxg0ltiusSW2JGpi1OiNiUZjTfSaYi+xGzWWWLGXWLBh7KgIIqIgSIf5/gD5sIAg4Iu4n7Vcy9Nm9jnnBfY7c2aO0lojhBBCCCEyFyNDByCEEEIIIV4mSZoQQgghRCYkSZoQQgghRCYkSZoQQgghRCYkSZoQQgghRCYkSZoQQgghRCYkSZoQIstSSpVVSmmlVDZDx/IipdQUpdSIdC7TRil1NA3HL1FKTU7PmIQQb06SNCGyGKWUl1IqTCkVopR6rJTappQqZei40kopdSn+nEKUUjFKqfBEy2MNHV9qKKUKAb2AX9KzXK31eSBQKdUumbrdE127h0qpjUqpYqmtKz75rZimgIUQyZIkTYisqZ3WOhdQDPADfjJwPGmmtbbWWueKP69DwKfPlrXW3xs6vlTqA2zXWodlQNkrgYGv2efT+OtYGcgLzMqAOIQQaSRJmhBZmNY6HFgPWD1bp5TKrpT6USl1Rynlp5RaoJTKEb+tkVLKWyn1uVLqgVLKVynVN35b8UQtVyFKqVCllE5Ubj+l1OX41ru/lVJlEm3TSqlBSqlrSqlApdQ8pZRKybGvo5QyUkqNU0rdjo95mVIqTxL7eimlmiZanqiUWpFoubZS6mh8jOeUUo0SbXNXSn2rlDqilApWSu1SShVMybGv0Ao4kOjYMUqpE8+6ZZVSg+NbDs1eiN9UKfVIKVU90brC8feiUPwqd6CJUip7shcO0Fo/AjYA1V61XSn1sVLqenydW5RSxePXH4zf5Vz8Z6Hr6+oSQqSeJGlCZGFKKXOgK3A80eqpxLWg2AEVgRLAhETbiwJ54tf/B5inlMqntfZJ1HKVC9gErI6vpwMwFnAFChHX0vXHC+G0BWoBNkAXoEUqjk1On/h/LkB5IBfwcyqOJz6OEsA2YDKQH/gC2JAo+QHoDvQFCgOm8fuk9NjEqgNXEi1PByKAcUqpSsD3QM/4JDuB1jqSuGveM9HqbsBerbV//D73gCigSgrOuSDQGTj7im2NgSnE3atiwO34utFaN4zfzTb+87DmdXUJIVJPkjQhsqY/lVKBQBDQjLgkgPjWqwHASK31I611MHEJwYeJjo0C/qu1jtJabwdCeOEPvlJqDFAV6Be/ahAwRWt9WWsdHV+m3QstYlO11oFa6zvAfuKSxJQem5wewEyt9U2tdQjwFfChSv1ggZ7EdUFu11rHaq13A6eA1on2Way1vhrfTbk20Tmk5NjE8gLBzxa01rHEPaM2DNgCTNNav5Q4xVsKdEvUEvkRsPyFfYLj60jK3PjPxznAF/jsFfv0ABZprc9orSOIu651lFJlkylXCJGOJEkTImvqqLXOC5gBnwIHlFJFiWupMgdOx3fLBQI749c/ExCfLD0TSlzrFABKqVbA8Pg6nj1TVQaYk6jMR4AirjXumftJlJnksUqpsYm6Vxckca7FiWvleeY2kA0okuTVebUygNuzOOJjqU9cK1JKzuF1xyb2GLBIvEJr7UVc8loWmJdUkFrrE/F1N1JKVSWuNXTLC7tZAIFJlQEM01rn1VqX0Fr3eNYK94Lnrmt8AhzA8/dUCJGBMt2wdCFE+tFaxwAblVK/EJc0bATCAOv4brFUUUpVIa4lx1VrfTfRprvAd1rrlW8QZnLHHiWuZS05PsQlSc+UBqKJGzBR8oV9nxKXpD5T9IU4lmutP05J0C9I7bHniety/ufZCqVUG6AOsJe4ls/kHv5fSlzr3X1gfeJu0fiuV1Oe7059E89dV6VUTqAAkOrPjRDizUhLmhBZmIrTAcgHXI7vVvsNmKWUKhy/TwmlVIsUlJUb2Ax8rbU+/MLmBcBXSinr+H3zKKXcUhhmWo6FuOfXRiqlyimlchGX1K15oTXwGQ/iukJNlFIOwAeJtq0A2imlWiiljJVSZipuIMWLid6rpPbY7YDzs4X4Z8N+B/oDvePLap1ou5dSqs8L9XUiLlFb9kLZzsC++C7KtPgD6KuUsosfhPA9cCK+xQ/ikuDyaaxDCJEMSdKEyJq2KqVCgCfAd0BvrfWl+G1jgOvAcaXUE2APKXjIHKgZv9+sRF2QIQBa603AD8Dq+DIvEjeC8bXScmy8RcQ9k3UQuAWEA0OT2Hc8UIG47sZJwKpEcdwFng1i8CeudWwUKfg9+QbHLgNaq/hRtcCvwOb4Z9oCiBuw8btSqoBSypS4FqyEwR/x9Z0BNHEDLRLrQVzimyZa6z3EXa8NxD23VoHnn12cCCyN797tktb6hBAvU1rr1+8lhBAiXSmlvgceaK1nv2a/+sAnWutuL6xfBPhorcclWmcD/KK1rpMRMQsh3i5J0oQQ4h0TP8LSA6ihtb5l2GiEEBklw7o7lVKLVNzEkheT2K6UUnPjJ0o8r5SqmVGxCCFEVqGU+pa4LuHpkqAJkbVlWEuaUqohcfMrLdNavzSbdfxDsUOJm0fICZijtXbKkGCEEEIIId4xGdaSprU+SNx8R0npQFwCp7XWx4G86g1e8iuEEEIIkRUZcnRnCeJGQD3jjUySKIQQQggBvCOT2SqlBhD3Khty5sxpX7VqVQNHJIQQQggRJypGExwexZOwKEIioomJCCU68D5KgY6Nfai1Tuo9vskyZJJ2DyiVaLkkScxkrbX+lbh5hHBwcNCnTp3K+OiEEEIIIV5Ba81l32D2XPZjz2U/znsHAWCZ1wzTi3+yf9U8qlevzsYNG6hUqdLt1xSXJEMmaVuAT5VSq4kbOBCktfY1YDxCCCGEEK8UGR3LiVsB7PH0Y8/lB9wLDEMpqFEqL6NbVsGxmCkTPx/Ctm3b6NmzJ7/88gvm5uavLzgZGZakKaX+ABoBBZVS3sA3gAmA1noBca9FaU3czOehQN+MikUIIYQQIrWCQqNwv/qA3Z5+HLjiT3BENGYmRtSvWIhhTSriUrUwhS3M8PDwoHPrzty9e5d58+YxePBglFJprj/DkrQXZ8d+xXYNfJJR9QshhBBCpNadgFB2X/Zjj6cfJ70eEROrKZgrO21sitHUsgj1KhYkh6lxwv5Lly5l0KBBFChQgIMHD1K7du10i+WdGDjwOlFRUXh7exMeHm7oUIR4p5mZmVGyZElMTEwMHYoQQrwVsbGac96B7Lnsx25PP676hQBQuUguBjYsT1OrItiVzIuR0fMtYxEREYwYMYIFCxbQuHFj/vjjDwoXLpyusWWJJM3b2xsLCwvKli2bLs2LQryPtNYEBATg7e1NuXLlDB2OEEJkmLDIGI5cfxj/4P8DHoZEYGykcCybn/FtS9PUsjBlCuRM8vg7d+7g5ubGyZMn+fLLL/n222/Jli39U6oskaSFh4dLgiZEGimlKFCgAP7+/oYORQgh0p1/cAT7/vVjt+cDDl/3JzwqllzZs+FcpRDNrYrQqHJh8pi/vhdhz549dOvWjYiICDZu3EinTp0yLOYskaQBkqAJkQ7k50gIkVVorbn+ICTh+bKzdwPRGkrkzUFXh1I0tSqCU7kCmGZL2bz+sbGxTJ06lfHjx2NpacnGjRupXLlyhp5DlknSDMnFxYUvv/ySFi1aJKybPXs2f//9N3fv3uXixeffMd+nTx8OHDhAnjx5ADA3N+fo0aNvNWYhhBAiK7rmF8xmDx/+Ou+DV0AoANVL5GFEk8o0syqCZTGLVH8hDQwMpHfv3mzZsoVu3brx22+/kTNn0t2h6UWStHTQrVs3Vq9e/VyStnr1aqZNm8aQIUNeecz06dP54IMP3laIQgghRJZ1LzCMred82Ozhw2XfJxgpqFuhIP0blKeJZWGK5cnxxmWfP3+ezp074+XlxZw5cxg6dOhb63WQJC0dfPDBB4wbN47IyEhMTU3x8vLCx8eHUqVKvf5gIYQQQqTao6eRbLvgyxaPe/zj9RiAGqXzMrGdFa1tilHYwizNdaxYsYIBAwaQN29e3N3dqVevXprLTI0sl6RN2noJT58n6VqmVfHcfNPOOsnt+fPnx9HRkR07dtChQwdWr15Nly5dks20R40axeTJkwGwtrZm5cqV6RqzEEIIkdU8jYhmt6cfmz3ucejaQ6JjNZUK5+KL5pVpb1uC0gXSNsP/M5GRkXz22WfMmzcPZ2dnVq9eTdGiRdOl7NTIckmaoTzr8nyWpC1cuDDZ/aW7UwghhHi9yOhYDlz1Z7PHPfZc9iM8KpYSeXPQv0F5OtgVp2rR1D9jlhxvb2/c3Nw4fvw4X3zxBVOmTMmQ6TVSIsslacm1eGWkDh06MHLkSM6cOUNoaCj29vZ4eXkZJBYhhBDiXRYTqzlxK4AtHj7suHifoLAo8uc0xc2+FO3timNfOt9Lk8umh/3799O1a1fCwsJYt26dwRtTslySZii5cuXCxcWFfv360a1bsm/EEkIIIcQLtNZcvPeEzR732HreB78nEZibGtPCuijt7YpTv2JBTIxTNl3Gm9Q9ffp0vvrqK6pUqcLGjRupWrVqhtSVGpKkpaNu3brRqVMnVq9enbDuypUrlCxZMmF51qxZwPPPpAGcPHkSU1PTtxesEEIIkQnc8A9hi4cPW875cOvhU0yMFY2qFKa9bXGaWhZ57j2ZGeHJkyf07duXjRs34ubmxsKFC7GwsMjQOlNKkrR01LFjR+LeGx+nbNmyREVFvbSfm5vb2wxLCCGEyFTuB4Wz9VxcYnbhXhBKQe1yBRjYsDytqhVL0cz/6eHSpUu4urpy48YNZs6cyYgRIzLVpN6SpAkhhBAiwwWGRrLj4n02e9zjxK1HaA02JfMwro0lbW2KUzRP2qfMSI3Vq1fzn//8h9y5c7Nv3z4aNmz4VutPCUnShBBCCJEhQiOj2XP5AVs87nHgqj9RMZryBXMyvEkl2tsWp3yhXG89pqioKEaNGsWcOXOoX78+a9eupVixYm89jpSQJE0IIYQQ6SYqJpbD1x6y2eMeuzz9CI2MoWhuM/rULUsHuxJYF89tsC5FHx8funTpwpEjRxgxYgTTpk3DxOTtdK2+CUnShBBCCJEmsbGaU7cfs9njHtsv+PI4NIo8OUzoYFeCDnbFcSybP0OmzEiNgwcP0qVLF0JCQli9ejVdu3Y1aDwpIUmaEEIIIVJNa42n7xO2nPNhq4cPPkHh5DAxpqlVETrYFqdh5UKYZsuYKTNSG+esWbMYPXo0FStWZO/evVhbG2ZO1dSSJE0IIYQQKXY74ClbPHzYfM6H6w9CyGakaFi5EGNaVaWpZRFyZs88qUVwcDD/+c9/WLduHa6urixevJjcuXMbOqwUyzxXUgghhBCZ0oPgcP4658uWcz543A0EwLFcfr7rVI1W1YqRP2fmm+fz8uXLuLq6cvXqVaZNm8YXX3yRqabXSAlJ0oQQQgjxkvCoGHZ7+rHxjDcHrz0kJlZjVSw3X7WqSjvb4hTPm8PQISZp/fr19O3bF3Nzc/bs2YOLi4uhQ3ojhu8szgL++ecfbGxsCA8P5+nTp1hbW3Px4sVkj9m3bx8dO3ZMWN69ezedOnXK6FCFEEKIJGmtOeX1iK82XqDWd3sY+sdZ/r0fzMCG5dk9siHbhzdgoHOFTJugRUdH88UXX+Dm5kb16tU5c+bMO5ugQRZsSRsxYgQeHh7pWqadnR2zZ89OcnutWrVo374948aNIywsjJ49e1KmTBns7Oxeuf+qVatwcXFhyJAh+Pv7U6hQIRYvXky/fv3SNW4hhBAiJe4+CmXT2XtsPOONV0AoOUyMaVWtKK41S1KnQgGMDTwyMyXu379P165dOXjwIEOHDuXHH39851+3mOWSNEOZMGECtWrVwszMjLlz52JsbPzaZPGjjz5ixYoV9O3bl2PHjrFs2bK3FK0QQoj3XUhENNsv+LLhtDcnbj0CoE75AnziUpFW1YuRKxMNAHidI0eO4ObmRmBgICtWrKBHjx6GDildvDt3IIWSa/HKSAEBAYSEhBAVFUV4eDixsbE0aNDglfuuWrUKKysr+vbtS7t27TAzM8PNzY1s2bLc7RBCCJGJxMRqjt54yMYz99h58T5hUTGUK5iTz5tVplPNEpTMZ27oEFNFa83cuXP54osvKFu2LH///TfVq1c3dFjpRrKCdDJw4EC+/fZbbt26xZgxY/j5559f25JWvHhxihcvzuTJk9mzZ89bilQIIcT75vqDEDac8ebPs/fwDQrHwiwbnWqWoHPNktQsnfedG/UIEBISwscff8zq1avp0KEDS5cuJU+ePIYOK11JkpYOli1bhomJCd27dycmJoa6deuyb98+Gjdu/Npje/Togb+/P5aWlm8hUiGEEO+Lx08j2Xrehw2nvTnnHYSxkcK5ciG+bmNJU8simJkYGzrEN3b16lVcXV25fPky33//PWPGjMHIKOuNhZQkLR306tWLXr16AWBsbMyJEydSfOzhw4f5+OOPMyo0IYQQ75GomFj2//uADWe82ffvA6JiNFWLWjCujSXt7YpT2MLM0CGm2aZNm+jduzfZs2dn165dNGnSxNAhZRhJ0gzI3t6enDlzMmPGDEOHIoQQ4h12JyCUVSfvsO7UXQKeRlIwlym96pSlc82SWBV/d2bYT050dDRff/0106ZNw9HRkfXr11OqVClDh5WhJEkzoNOnTxs6BCGEEO+o6JhY9v37gJUn7nDwmj9GStGkamG61ipFw8qFMDHOOt1/Dx484MMPP2T//v0MHjyYWbNmkT17dkOHleEkSRNCCCHeIQ+ehLP6n7v8cfIOvkHhFMmdnWGNK9HNsTRF87z73ZkvOnbsGG5ubgQEBLB06dKEx4veB5KkCSGEEJmc1pqjNwJYeeI2uy75ER2raVCpIN+0s6aJZeEs1Wr2jNaa+fPnM3LkSEqVKsWxY8eSnCQ+q5IkTQghhMikAkMjWX/am1Un7nDz4VPympvQt15ZujuVoVzBnIYOL8M8ffqUQYMGsWLFCtq2bcuyZcvIly+focN66yRJE0IIITIRrTUedwNZcfwOf533ISI6lpql8zKziy2tqxd7p6fOSInr16/j6urKxYsX+fbbbxk7dmyWnF4jJSRJE0IIITKBpxHRbDnnw4rjt7nk84ScpsZ8YF+SHk5lsswIzdfZsmULvXr1wtjYmB07dtCiRQtDh2RQkqQJIYQQBnTlfjArT9xm05l7BEdEU7WoBd92rEanGiXeqfdnpkVMTAwTJkzg+++/x8HBgfXr11OmTBlDh2Vw78fdf0tcXFwYO3YszZo1Y9y4cQQFBfHTTz8ZOiwhhBCZTER0DDsv3mfF8dv84/UYU2Mj2tgUo2ft0tQsne+dfE3Tm/L396d79+7s2bOHjz/+mLlz52JmlvVGqb6JLJmkNVrS6KV1Xay7MKTWEEKjQmm9svVL2/vY9aGPXR8ehj7kg7UfPLfNvY97iuqdNGkSEyZM4MGDB5w9e5YtW7a8SfhCCCGyKN+gMFYcv83qk3GTzpYpYM7Y1lX5wL4U+XOaGjq8t27+jvmMXjaaqENRLFy4kH79+hk6pEwlSyZphtKwYUO01sycORN3d3eMjeMe7qxVqxZOTk48efKERo0ayYdQCCHeI1prTt1+zJIjXuy8dB+tNU0si/BR7TLUr1gQI6P3p9XsGa/HXnT+pTNnIs5ARdi5byct6r7fz5+9SpZM0pJr+TI3MU92e0HzgiluOXvRhQsX8PX1pUCBAlhYWABw9+5dnJyc+Pnnn4G4LtHevXsnJHBCCCGypvCoGLac82HpUS8u+Twht1k2/lO/HB/VLkOp/OaGDs8gQqNC+c79O344/AMxMTGYxZhhV95OErQkZMkkzRB8fX3p0aMHmzdvZtiwYezcuZOWLVty+vRp7O3tE/bLmTPnezuUWAgh3gfPujT/OHmXR08jqVwkF993qk7HGsUxN30//+xqrVnvuZ4RO0bg89QHPGGE9QgcuzpipORvYlLez09LOgsNDcXV1ZUZM2ZgaWnJ+PHjGTNmTEKS5ubmBsC5c+coXbr0e/VAqBBCvA9e7NKM1ZpmlkXoU7csdSoUeK9/71/wu8CwncNw93LHyN+IXAdysXbaWlq1amXo0DI9SdLSgbm5OceOHUtYbtiwYcLy6dOnCQgIIHv27BgbG/PDDz8YKkwhhBDpTLo0k/Yo7BET9k/gf6f+R/bY7LANbGJt2LhlI+XKlQPgbtBdAErlKWXIUDMtSdIy2Pbt2w0dghBCiHQmXZpJi4mN4dfTvzJu/zgCwwMp4VuCu0vv0vfDvsybN48cOXIk7PvRpo+AlM+i8L55vz9JQgghRApJl+brHbx9kGE7hnHO7xz2Bezx+cMHP08/fv35V/r37y/XKJUkSRNCCCGSIV2ar3c36C6jdo9izaU1lMpdioH5B7L4i8UULVKUw4cPU6tWLUOH+E6SJE0IIYR4hftB4Sw/7vVcl+Z3neJe1/S+d2k+ExYVxo9Hf2TK4SloNF/X+xrvNd788vsvNGvWjFWrVlGwYEFDh/nOkk+ZEEIIkcj1ByH8cuAGf3rcIzpW09SyCH2lS/M5Wmv+/PdPPtv1GV6BXnS27MwIqxEM7z2cM2fOMG7cOCZOnChzgqaRJGlCCCEEcPbOYxYcuMEuTz9MjY3o7lia/9QvT+kC0qWZmKe/J8N3DmfPzT1YF7Jmb6+9RF6JpINzB2JiYtiyZQvt2rVLUVmf1/k8g6N9t0mSJoQQ4r2ltebgtYf8z/06x28+IrdZNj51qUjvumUpmCu7ocPLVALDA5noPpGfT/6MRXYLfmr1EwNqDmDq91OZOHEi1atXZ8OGDVSsWDHFZbarkrJk7n0lSZoQQoj3TnRMLNsv3meB+w08fZ9QNLcZ49pY8qFjaXJllz+NicXExrDo7CLG7htLQGgAA+wHMLnxZIwjjOnUoRPbt2/no48+YsGCBZibp67V8crDKwBUKVglI0J/58m7GN5R7u7uHD16NGF5wYIFLFu2LF3KbtSoEadOnQKgdevWBAYGvnFZs2fPTpe4vLy8WLVqVcLyqVOnGDZsGAARERE0bdoUOzs71qxZQ//+/fH09Ex1HR4eHs/Na7dlyxamTp2a5tjTQ3Lnn1qRkZE0bNiQ6Ojo9ApPiHdGeFQMK47fpvGMAwz74yzh0TFM+8CGg6Nd6N+gvCRoLzhy5wiOvzsy4K8BVC1YldMDTrOg7QLuXrmLvb09u3fvZv78+SxdujTVCRrAwL8GMvCvgRkQedYgn8ZMLDo6mmzZXn2L3N3dyZUrF3Xr1gVg0KBBGRJDWibjjY6OZtGiRZw5c+aV25I6t1d5lqR0794dAAcHBxwcHAA4e/YsEJdkAXTt2vWN4vXw8ODUqVO0bt0agPbt29O+ffs3Kiu9JXf+qWVqakqTJk1Ys2YNPXr0SM8whci0noRHseL4bRYd9uJhSAS2pfIytrUlza2KYGQkgwFedO/JPcbsGcPKCyspYVGCVa6r+LDahyilWLJkCYMHD6ZgwYIcOnQIJycnQ4ebdWmt36l/9vb2+kWenp4vrXvbZsyYoa2trbW1tbWeNWuW1lrrW7du6SpVquju3bvrqlWr6s6dO+unT59qrbU+deqUbtiwoa5Zs6Zu3ry59vHx0Vpr7ezsrIcPH67t7e31jz/+qLds2aIdHR21nZ2dbtKkib5//76+deuWLlKkiC5evLi2tbXVBw8e1N98842ePn16QhmjR4/WtWrV0pUqVdIHDx7UWmv99OlT7ebmpi0tLXXHjh21o6Oj/ueff146F2dn54T1ZcqU0f7+/vrWrVu6atWqun///trKyko3a9ZMh4aGaq21vn79um7RooWuWbOmrl+/vr58+bLWWuu///5b9+7d+7lyE59bUtfg2rVrukmTJtrGxkbXqFFDX79+XTs5OencuXNrW1tbPXPmTL1//37dpk0b7efnpytUqJCw7fr168/Fv2PHDl2jRg1tY2OjGzdurLXW+sSJE7p27drazs5O16lTR//77786IiJClypVShcsWFDb2trq1atX68WLF+tPPvkk4V66uLjo6tWr68aNG+vbt29rrbXu3bu3Hjp0qK5Tp44uV66cXrdu3UvXMyQkRLdu3Vrb2Nhoa2trvXr16mQ/A6k5f621DggI0B06dNDVq1fXTk5O+ty5c1prrb/55hvdt29f7ezsrMuVK6fnzJmTEJOHh4du1arVKz/LmeHnSYj04hcUpr/f7qmtJ+zUZcb8pT9aeEIfvf5Qx8bGGjq0TCk8Klx/f/B7nfO7nNr0W1P99d6vdXBEcNy28HA9YMAADejGjRvrBw8epLk+58XO2nmxc5rLycyAU/oNcx6DJ12p/fe6JG34juEJNz29/g3fMTzZG3Dq1CldrVo1HRISooODg7WVlZU+c+aMvnXrlgb04cOHtdZa9+3bV0+fPl1HRkbqOnXqJHzAV69erfv27au1jktkBg8enFD2o0ePEn6Z/Pbbb/qzzz7TWuvnkrIXl52dnRP227Ztm27SpInWWuvp06frAQMGaK21vnDhgjY2Nk5VkmZsbKzPnj2rtdbazc1NL1++XGutdePGjfXVq1e11lofP35cu7i4aK21njBhgp47d+5z5T47t+SugaOjo964caPWWuuwsDD99OnT55ISrfVzyy9uexb/gwcPdMmSJfXNmze11nHJjNZaBwUF6aioKK211rt379aurq5a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toYPH84dd9xB2bJlmTlzJg0bNvzT9xVqR36YVSQ3KlTQtSki4Ve7Qm2/Qwi0fD/c+UnSepZs2MXD11ejZJHI5KyHDh2iZ8+edOzYkbp167Jw4cK/JGgAa6etZe20tRGJQeRErF27lrVrdW2KSHhNWzuNaWun+R1GYOXrnrRdySk8P3kVdSudzE21K0ZkGxs2bKBt27bMmzeP//znPzz33HMUKlQow2VnPTMLgMpNK0ckFpHcmjXLuzYr69oUkfB5ZtYzADSt3NTnSIIpXydpL01dxc7kQzzZ4tKI3CwwY8YM2rdvT3JyMiNHjqRNmzZh34aIiIjEpnw73Ln8t90Mnf8zner/jYsqlg5r2845XnjhBZo2bcopp5zCt99+qwRNREREciRf9qQ55+gzfillixfmvmuqhrXt3bt307VrV8aMGUObNm147733KFWqVFi3ISIiIrEvX/akjVv8GwvW/c7/NatKmeIZzw/LjWXLllG3bl3GjRtHv379GDFihBI0ERERyZV815O250AKz05aQa2zytCmztlha/fjjz+mW7dulCpVii+//JJGjRrluI0bBt4QtnhEwumGG3Rtikj4DbxhoN8hBFq+S9Je+3IN2/Ye5N1b4yhQ4MRvFkhJSaF379688sorNGzYkJEjR1KxYu7uFC1ftfwJxyMSCeXL69oUkfCrWj68U45iTb5K0tZs2cOgr3+iXdzZ1Dq77Am3t3HjRtq0acOcOXP497//Td++fTN9vEZ2rJqwCoCqN+qilWBZtcq7Nqvq2hSR8JmwagIAN1a90edIginfJGnOOZ4Yv5zihQvS+7oT/0Mza9Ys2rZty549e/joo49o3779Cbc5r988QEmaBM+8ed61yNTC4QAAF4JJREFUqSRNRMKo37x+gJK0zOSbGwcmL93E12u2cf91VSlXskiu23HO8dJLL3HVVVdRpkwZvv3227AkaCIiIiJp5YuetP2HjvDMZyu4sEIpbql3Tq7b2bNnD926deOTTz6hZcuWDB48mNKlw/uMNRERERHIJz1pb85cw6879/PUTTU4qWDudnnFihXUq1eP0aNH88ILLzB69GglaCIiIhIxMd+T9vP2fbw1ay03165IvXNPyVUbo0aNomvXrhQrVoxp06bRpEmTMEcpIiIi8mcxn6Q9PXE5hQoYD11fLcfrHj58mAcffJB+/fpRv359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\n"}, "metadata": {"needs_background": "light"}}]}}, "d0c675f62e85489aa09e8d0592441ab4": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "ab8e11a71e7843129bbef8fdf065ec14": {"model_module": "@jupyter-widgets/controls", "model_name": "FloatSliderModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "FloatSliderModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "FloatSliderView", "continuous_update": true, "description": "Distillate", "description_tooltip": null, "disabled": false, "layout": "IPY_MODEL_0e0840f0a36341588fce881ef04cf5e5", "max": 1, "min": 0, "orientation": "horizontal", "readout": true, "readout_format": ".2f", "step": 0.1, "style": "IPY_MODEL_5de60202bdef48798fbfbb51abd237de", "value": 0.9}}, "4c9500e6e7974d3eb31a235f2aaf8da2": {"model_module": "@jupyter-widgets/controls", "model_name": "FloatSliderModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "FloatSliderModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "FloatSliderView", "continuous_update": true, "description": "Reflux ratio", "description_tooltip": null, "disabled": false, "layout": "IPY_MODEL_f2d07980de87444aba6bc296050cb35c", "max": 5, "min": 0, "orientation": "horizontal", "readout": true, "readout_format": ".2f", "step": 0.1, "style": "IPY_MODEL_63fa18197de24ecea777a60e168ca00e", "value": 3}}, "272300096d624503ba6938f8994fcd27": {"model_module": "@jupyter-widgets/controls", "model_name": "FloatSliderModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "FloatSliderModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "FloatSliderView", "continuous_update": true, "description": "Bottom", "description_tooltip": null, "disabled": false, "layout": "IPY_MODEL_49df643876b44c9692e2b0c80b344a55", "max": 1, "min": 0, "orientation": "horizontal", "readout": true, "readout_format": ".2f", "step": 0.1, "style": "IPY_MODEL_768ef04c0cbf44d49ca248b736ec87ab", "value": 0.1}}, "d4bac07dfe16490ca0747d2d2325e1a9": {"model_module": "@jupyter-widgets/controls", "model_name": "FloatSliderModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "FloatSliderModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "FloatSliderView", "continuous_update": true, "description": "L/V", "description_tooltip": null, "disabled": false, "layout": "IPY_MODEL_f5071c1a71044e4db368ff947837ad6e", "max": 5, "min": 1, "orientation": "horizontal", "readout": true, "readout_format": ".2f", "step": 0.1, "style": "IPY_MODEL_300d038022cf42a3a44da661fba3a301", "value": 1.4}}, "f28dbdafced9433ba683abe5d1dffbad": {"model_module": "@jupyter-widgets/controls", "model_name": "FloatSliderModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "FloatSliderModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "FloatSliderView", "continuous_update": true, "description": "feed", "description_tooltip": null, "disabled": false, "layout": "IPY_MODEL_99e9afbaca954d199f83399d84f87acd", "max": 1, "min": 0, "orientation": "horizontal", "readout": true, "readout_format": ".2f", "step": 0.1, "style": "IPY_MODEL_37387ca011b54262b862cc3d349633f4", "value": 0.4}}, "4ff54d75c7f44e77a2ee8c012dad484a": {"model_module": "@jupyter-widgets/controls", "model_name": "CheckboxModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "CheckboxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "CheckboxView", "description": "plot_stages", "description_tooltip": null, "disabled": false, "indent": true, "layout": "IPY_MODEL_e0e44b205104457b8daab7ecbe75ace6", "style": "IPY_MODEL_54f4e070fa1b49ef9097a34ebeddac3b", "value": false}}, "98b524c83eef4592b1153768a144f676": {"model_module": "@jupyter-widgets/controls", "model_name": "CheckboxModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "CheckboxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "CheckboxView", "description": "summary", "description_tooltip": null, "disabled": false, "indent": true, "layout": "IPY_MODEL_8142a60eb48747bc9eae7a7b2aaa454d", "style": "IPY_MODEL_bbac892267524edbba0c2ef40767656c", "value": false}}, "51e43045403d439fa47758e140f38e21": {"model_module": "@jupyter-widgets/controls", "model_name": "ButtonModel", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "ButtonModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "ButtonView", "button_style": "", "description": "Run Interact", "disabled": false, "icon": "", "layout": "IPY_MODEL_e9102ec845c840c0be5b9b5d61c52d82", "style": "IPY_MODEL_81e04f3326ea4c97a8ea56a19701b21e", "tooltip": ""}}, "1fbeb28e77b042508a57fa965afe635e": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": "flex-start", "align_self": null, "border": null, "bottom": null, "display": "flex", "flex": null, "flex_flow": "column", "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": "space-between", "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "0e0840f0a36341588fce881ef04cf5e5": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "5de60202bdef48798fbfbb51abd237de": {"model_module": "@jupyter-widgets/controls", "model_name": "SliderStyleModel", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "SliderStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": "", "handle_color": null}}, "f2d07980de87444aba6bc296050cb35c": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "63fa18197de24ecea777a60e168ca00e": {"model_module": "@jupyter-widgets/controls", "model_name": "SliderStyleModel", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "SliderStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": "", "handle_color": null}}, "49df643876b44c9692e2b0c80b344a55": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "768ef04c0cbf44d49ca248b736ec87ab": {"model_module": "@jupyter-widgets/controls", "model_name": "SliderStyleModel", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "SliderStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": "", "handle_color": null}}, "f5071c1a71044e4db368ff947837ad6e": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "300d038022cf42a3a44da661fba3a301": {"model_module": "@jupyter-widgets/controls", "model_name": "SliderStyleModel", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "SliderStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": "", "handle_color": null}}, "99e9afbaca954d199f83399d84f87acd": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "37387ca011b54262b862cc3d349633f4": {"model_module": "@jupyter-widgets/controls", "model_name": "SliderStyleModel", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "SliderStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": "", "handle_color": null}}, "e0e44b205104457b8daab7ecbe75ace6": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "54f4e070fa1b49ef9097a34ebeddac3b": {"model_module": "@jupyter-widgets/controls", "model_name": "DescriptionStyleModel", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "DescriptionStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": ""}}, "8142a60eb48747bc9eae7a7b2aaa454d": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "bbac892267524edbba0c2ef40767656c": {"model_module": "@jupyter-widgets/controls", "model_name": "DescriptionStyleModel", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "DescriptionStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": ""}}, "e9102ec845c840c0be5b9b5d61c52d82": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "81e04f3326ea4c97a8ea56a19701b21e": {"model_module": "@jupyter-widgets/controls", "model_name": "ButtonStyleModel", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "ButtonStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "button_color": null, "font_weight": ""}}, "83c5d7e880b54c2cb2eeb5f5f6ac8b72": {"model_module": "@jupyter-widgets/base", "model_name": "LayoutModel", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}}
+</script>
+
+
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Location</h3>
+								<p>
+								           Richards Bay <br> KwaZulu-Natal, South Africa</p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://linkedin.com/in/laungunu" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/leenaldA" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>Website template: <a href="https://html5up.net/">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	
+</body></html>
